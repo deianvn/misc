@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    	<title>Posts</title>
+    </head>
+    <body>
+        <div class="post">
+        	<article th:each="post : ${posts}">
+        		<header><h3><a th:text="${post.title}" th:href="@{/posts/{id}(id=${post.id})}">Post Title</a></h3></header>
+        		<footer><p>Created on <span th:text="${#dates.format(post.createdDate, 'dd/MM/yyyy')}">15/12/2017</span></p></footer>
+        	</article>
+        </div>
+    </body>
+</html>
