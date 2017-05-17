@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    	<title>Posts</title>
+    </head>
+    <body>
+        <div class="post">
+        	<article>
+        		<header><h3 th:text="${post.title}">Post Title</h3></header>
+        		<section><p th:text="${post.text}">Post body</p></section>
+        		<footer><p>Created on <span th:text="${#dates.format(post.createdDate, 'dd/MM/yyyy')}">15/12/2017</span></p></footer>
+        	</article>
+        </div>
+    </body>
+</html>

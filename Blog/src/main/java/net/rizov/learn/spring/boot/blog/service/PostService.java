@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.rizov.learn.spring.boot.blog.domain.Post;
+import net.rizov.learn.spring.boot.blog.domain.PostNotFoundException;
 
 @Service
 public class PostService
@@ -28,6 +29,17 @@ public class PostService
 	}
 	
 	return list;
+    }
+    
+    public Post getPost(String id) throws PostNotFoundException
+    {
+	if ("0".equals(id))
+	{
+	    return new Post(id, randomStringService.nextString(100),
+		    randomStringService.nextString(1200), dummyDateService.createDate(0));
+	}
+	
+	throw new PostNotFoundException(id);
     }
 
 }

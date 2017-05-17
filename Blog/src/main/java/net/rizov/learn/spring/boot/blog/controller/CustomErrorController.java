@@ -37,7 +37,7 @@ public class CustomErrorController implements ErrorController
     public String error404(HttpServletRequest request, Model model)
     {
 	populateErrorAttributes(request, model);
-	return "error/404";
+	return "error/page404";
     }
 
     private void populateErrorAttributes(HttpServletRequest request, Model model)
