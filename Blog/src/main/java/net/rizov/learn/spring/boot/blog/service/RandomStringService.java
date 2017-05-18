@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class RandomStringService
 {
 
-    private static final String AB = "0123456 789ABCDEFG HIJKLMNOPQRS TUVWXY Zabcde fg hijklmn opqrst uvwxyz";
+    private static final String AB = "abcdefghijklmnopqrstuvwxyz";
     
     private static Random random = new Random();
 

@@ -11,30 +11,31 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Post
+public class PostComment
 {
     @Id
     @GeneratedValue
     private Long id;
-
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
+    
+    @Column(columnDefinition= "TEXT")
     private String text;
-
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
     
     @ManyToOne
+    private Post post;
+    
+    @ManyToOne
     private Author author;
     
-    public Post() {}
+    public PostComment() {}
     
-    public Post(String title, String text, Author author)
+    public PostComment(String text, Post post, Author author)
     {
 	super();
-	this.title = title;
 	this.text = text;
+	this.post = post;
 	this.author = author;
     }
 
@@ -46,16 +47,6 @@ public class Post
     public void setId(Long id)
     {
         this.id = id;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public void setTitle(String title)
-    {
-        this.title = title;
     }
 
     public String getText()
@@ -76,6 +67,16 @@ public class Post
     public void setDateCreated(Date dateCreated)
     {
         this.dateCreated = dateCreated;
+    }
+
+    public Post getPost()
+    {
+        return post;
+    }
+
+    public void setPost(Post post)
+    {
+        this.post = post;
     }
 
     public Author getAuthor()

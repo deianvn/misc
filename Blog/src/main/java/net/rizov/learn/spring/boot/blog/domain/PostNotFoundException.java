@@ -8,15 +8,15 @@ public class PostNotFoundException extends Exception
      */
     private static final long serialVersionUID = 8241735792874056813L;
 
-    private String postId;
+    private Long postId;
 
-    public PostNotFoundException(String postId)
+    public PostNotFoundException(Long postId)
     {
 	super();
 	this.postId = postId;
     }
     
-    public String getPostId()
+    public Long getPostId()
     {
 	return postId;
     }

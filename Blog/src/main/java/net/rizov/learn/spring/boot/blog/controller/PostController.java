@@ -25,7 +25,7 @@ public class PostController
     }
 
     @RequestMapping("/{postId}")
-    public String showPost(@PathVariable(value = "postId") String postId, Model model)
+    public String showPost(@PathVariable(value = "postId") Long postId, Model model)
 	    throws PostNotFoundException
     {
 	Post post = postService.getPost(postId);
