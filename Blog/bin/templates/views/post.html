@@ -2,14 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
     	<title>Posts</title>
+    	<link th:href="@{/styles/styles.css}" href="styles/styles.css" rel="stylesheet" />
     </head>
     <body>
-        <div class="post">
-        	<article>
-        		<header><h3 th:text="${post.title}">Post Title</h3></header>
-        		<section><p th:text="${post.text}">Post body</p></section>
-        		<footer><p>Created on <span th:text="${#dates.format(post.dateCreated, 'dd/MM/yyyy')}">15/12/2017</span></p></footer>
-        	</article>
-        </div>
+    	<div th:replace="fragments/menu :: menu"></div>
+        <div th:replace="fragments/single-post :: single-post"></div>
     </body>
 </html>

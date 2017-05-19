@@ -1,0 +1,38 @@
+ul.horizontal-menu {
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+}
+
+ul.horizontal-menu li {
+	float: left;
+}
+
+ul.horizontal-menu li a {
+	display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+ul.horizontal-menu li a:hover {
+	background-color: #111111;
+}
+
+div.section {
+	display: block;
+	background-color: white;
+	color: #333333;
+	padding: 16px;
+}
+
+div.section header a {
+	color: blue;
+}
+
+div.section header a:visited {
+	color: blue;
+}
