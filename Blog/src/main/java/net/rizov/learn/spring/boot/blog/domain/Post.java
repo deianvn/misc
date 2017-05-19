@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 public class Post
@@ -22,7 +22,8 @@ public class Post
     @Column(columnDefinition = "TEXT")
     private String text;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
+    @Column(columnDefinition = "TIMESTAMP")
     private Date dateCreated;
     
     @ManyToOne
