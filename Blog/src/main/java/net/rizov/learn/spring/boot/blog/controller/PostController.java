@@ -11,20 +11,19 @@ import net.rizov.learn.spring.boot.blog.domain.PostNotFoundException;
 import net.rizov.learn.spring.boot.blog.service.PostService;
 
 @Controller
-@RequestMapping("/posts")
 public class PostController
 {
     @Autowired
     private PostService postService;
 
-    @RequestMapping("/")
+    @RequestMapping("/posts")
     public String showPosts(Model model)
     {
 	model.addAttribute("posts", postService.getAllPosts());
 	return "views/posts";
     }
 
-    @RequestMapping("/{postId}")
+    @RequestMapping("/posts/{postId}")
     public String showPost(@PathVariable(value = "postId") Long postId, Model model)
 	    throws PostNotFoundException
     {

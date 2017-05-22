@@ -7,7 +7,7 @@
     <body>
     	<div th:fragment="single-post" class="section">
         	<article>
-        		<header><h3 th:text="${post.title}">Post Title</h3></header>
+        		<header><h2 th:text="${post.title}">Post Title</h2></header>
         		<section><p th:text="${post.text}">Post body</p></section>
         		<footer><p>Created on <span th:text="${#dates.format(post.dateCreated, 'dd/MM/yyyy')}">15/12/2017</span></p></footer>
         	</article>

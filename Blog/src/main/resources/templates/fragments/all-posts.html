@@ -6,7 +6,7 @@
     <body>
     	<div th:fragment="all-posts" class="section">
         	<article th:each="post : ${posts}">
-        		<header><h3><a th:text="${post.title}" th:href="@{/posts/{id}(id=${post.id})}">Post Title</a></h3></header>
+        		<header><h2><a th:text="${post.title}" th:href="@{/posts/{id}(id=${post.id})}">Post Title</a></h2></header>
         		<footer><p>Created on <span th:text="${#dates.format(post.dateCreated, 'dd/MM/yyyy')}">15/12/2017</span></p></footer>
         	</article>
     	</div>
