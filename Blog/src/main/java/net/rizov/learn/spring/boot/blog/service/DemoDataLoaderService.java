@@ -26,11 +26,11 @@ public class DemoDataLoaderService
     private PostCommentRepository postCommentRepository;
 
     private RandomStringService randomStringService;
-    
+
     private DummyDateService dummyDateService;
 
     private Random random = new Random();
-    
+
     @Autowired
     public DemoDataLoaderService(AuthorRepository authorRepository, PostRepository postRepository,
 	    PostCommentRepository postCommentRepository, RandomStringService randomStringService,
@@ -49,19 +49,25 @@ public class DemoDataLoaderService
     {
 	for (int i = 0; i < 100; i++)
 	{
-	    Author author = new Author(createRandomName(), createRandomName(), createRandomEmail(), "demo");
+	    Author author = i == 0 ? new Author(createRandomName(), createRandomName(), "admin@demo.com", "demo")
+		    : new Author(createRandomName(), createRandomName(), createRandomEmail(), "demo");
+
 	    authorRepository.save(author);
-	    
+
 	    for (int j = 0; j < random.nextInt(10); j++)
 	    {
 		Post post = new Post(createRandomLine(), createRandomText(), author);
 		post.setDateCreated(dummyDateService.createDate(random.nextInt(1000)));
 		postRepository.save(post);
-		
+
 		for (int k = 0; k < random.nextInt(20); k++)
 		{
 		    PostComment comment = new PostComment(createRandomShortText(), post, author);
-		    comment.setDateCreated(dummyDateService.createDate(random.nextInt(1000))); //may be inconsistent with post
+		    comment.setDateCreated(dummyDateService.createDate(random.nextInt(1000))); // may
+											       // be
+											       // inconsistent
+											       // with
+											       // post
 		    postCommentRepository.save(comment);
 		}
 	    }
@@ -77,45 +83,44 @@ public class DemoDataLoaderService
 
     private String createRandomEmail()
     {
-	return
-		randomStringService.nextString(random.nextInt(7) + 4) + "@" +
-		randomStringService.nextString(random.nextInt(7) + 4) + ".com";
+	return randomStringService.nextString(random.nextInt(7) + 4) + "@"
+		+ randomStringService.nextString(random.nextInt(7) + 4) + ".com";
     }
-    
+
     private String createRandomLine()
     {
 	StringBuilder sb = new StringBuilder();
-	
+
 	for (int i = 0; i < 3 + random.nextInt(12); i++)
 	{
 	    sb.append(randomStringService.nextString(1 + random.nextInt(10)) + " ");
 	}
-	
+
 	sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-	
+
 	return sb.toString().trim();
     }
-    
+
     private String createRandomShortText()
     {
 	return createRandomText(1, 5);
     }
-    
+
     private String createRandomText()
     {
 	return createRandomText(10, 30);
     }
-    
+
     private String createRandomText(int minLines, int maxLines)
     {
 	StringBuilder sb = new StringBuilder();
-	
+
 	for (int i = 0; i < minLines + random.nextInt(maxLines - minLines); i++)
 	{
 	    sb.append(createRandomLine() + ". ");
 	}
-	
+
 	return sb.toString();
     }
-    
+
 }
