@@ -1,0 +1,14 @@
+group 'net.rizov'
+version '1.0-SNAPSHOT'
+
+subprojects {
+    apply plugin: 'java'
+    repositories {
+        flatDir {
+            dirs '../libs'
+        }
+    }
+    dependencies {
+        compile name: 'algs4'
+    }
+}
