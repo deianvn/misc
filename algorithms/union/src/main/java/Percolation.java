@@ -37,8 +37,8 @@ public class Percolation {
         doOpen(FIRST, index);
       }
       if (wqu.connected(index, FIRST)) {
-        for (int i = LAST - 2; i >= LAST - N - 2; i--) {
-          if (blocks[i] && wqu.connected(index, i)) {
+        for (int i = LAST - 1; i >= LAST - 1 - N; i--) {
+          if (blocks[i - 1] && wqu.connected(index, i)) {
             doOpen(LAST, i);
           }
         }
