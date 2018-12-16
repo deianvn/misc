@@ -84,7 +84,7 @@ namespace io {
       try {
         num = std::stod(str);
         if (num <= .0)
-          std::cout << "Number must be in positive." << std::endl;
+          std::cout << "Number must be positive." << std::endl;
         else break;
       } catch (std::invalid_argument& e) {
         std::cout << "Number expected. Please try again." << std::endl;
@@ -141,25 +141,28 @@ struct Country {
   int capitalPopulation;
   int area;
   double population;
-
-  void read() {
-    std::cout << "Enter country:\n";
-    name = io::nextString(';');
-    for (std::size_t i = 0; i < CONTINENTS.size(); ++i) {
-      std::cout << i + 1 << " - " << CONTINENTS[i] + "  ";
-    }
-    std::cout << "\nEnter continent:\n";
-    continent = io::nextInt(1, 8);
-    std::cout << "Enter capital:\n";
-    capital = io::nextString(';');
-    std::cout << "Enter capital population:\n";
-    capitalPopulation = io::nextInt();
-    std::cout << "Enter area (square meters):\n";
-    area = io::nextInt();
-    std::cout << "Enter population (in millions):\n";
-    population = io::nextDouble();
-  }
+  void read();
 };
+
+bool nextCountry(std::istream& stream, Country& country);
+
+void Country::read() {
+  std::cout << "Enter country:\n";
+  name = io::nextString(';');
+  for (std::size_t i = 0; i < CONTINENTS.size(); ++i) {
+    std::cout << i + 1 << " - " << CONTINENTS[i] + "  ";
+  }
+  std::cout << "\nEnter continent:\n";
+  continent = io::nextInt(1, 8);
+  std::cout << "Enter capital:\n";
+  capital = io::nextString(';');
+  std::cout << "Enter capital population:\n";
+  capitalPopulation = io::nextInt();
+  std::cout << "Enter area (square meters):\n";
+  area = io::nextInt();
+  std::cout << "Enter population (in millions):\n";
+  population = io::nextDouble();
+}
 
 std::ostream& operator<<(std::ostream& stream, Country& country) {
   stream << country.name << ";"
@@ -185,6 +188,17 @@ std::istream& operator>>(std::istream& stream, Country& country) {
     stream.setstate(std::ios_base::failbit);
   }
   return stream;
+}
+
+bool nextCountry(std::istream& stream, Country& country) {
+  std::string line;
+  while (std::getline(stream, line)) {
+    if (line.empty()) continue;
+    std::istringstream iss(line);
+    iss >> country;
+    return true;
+  }
+  return false;
 }
 
 using ActionCallback = std::function<bool()>;
@@ -251,9 +265,41 @@ public:
       this->print();
       return true;
     }},
+    Action { 2, "Country with highest capital population", [this, &workingFile]() {
+      this->highestCapitalPopulation(workingFile);
+      return true;
+    }},
     Action { 0, "Back" }
   }) {}
+
+private:
+  void highestCapitalPopulation(std::string& workingFile);
 };
+
+void StatMenu::highestCapitalPopulation(std::string& workingFile) {
+  std::ifstream file(workingFile.c_str());
+  if (!file.is_open()) {
+    std::cout << "Could not open file." << std::endl;
+    return;
+  } else {
+    std::string line;
+    getline(file, line);
+  }
+  Country highestCountry;
+  if (nextCountry(file, highestCountry)) {
+    Country country;
+    while (nextCountry(file, country)) {
+      if (highestCountry.capitalPopulation < country.capitalPopulation) {
+        highestCountry = country;
+      }
+    }
+    std::cout << "Country: " << highestCountry.name << "\n"
+              << "Capital: " << highestCountry.capital
+              << " (" << highestCountry.capitalPopulation << ")" << std::endl;
+  } else {
+    std::cout << "No countries available." << std::endl;
+  }
+}
 
 class MainMenu : public Menu {
 public:
@@ -284,6 +330,10 @@ public:
       return true;
     }},
     Action { 6, "Statistics", [this, &workingFile]() {
+      if (workingFile.empty()) {
+        std::cout << "No working file selected." << std::endl;
+        return true;
+      }
       StatMenu statMenu { workingFile };
       statMenu.show();
       return true;
