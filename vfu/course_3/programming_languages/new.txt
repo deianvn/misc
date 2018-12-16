@@ -1,0 +1,2 @@
+Country;Continent;Capital;Capital population;Area;Population
+Bul;1;Sof;1200000;110000;7.2
