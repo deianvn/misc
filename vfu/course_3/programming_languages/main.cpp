@@ -26,10 +26,13 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <utility>
 #include <array>
 #include <vector>
+#include <unordered_map>
 #include <string>
 #include <algorithm>
 #include <limits>
@@ -122,6 +125,16 @@ namespace io {
     return file.good();
   }
 
+  void prepareFile(std::ifstream& file) {
+    if (!file.is_open()) {
+      std::cout << "Could not open file." << std::endl;
+      return;
+    } else {
+      std::string line;
+      getline(file, line);
+    }
+  }
+
 };
 
 const std::array<std::string, 7> CONTINENTS = {
@@ -133,6 +146,15 @@ const std::array<std::string, 7> CONTINENTS = {
   "South America",
   "Antarctica"
 };
+
+const std::string EMPTY_STR = std::string {};
+
+const std::string& getContinent(int index) {
+  if (index < 1 || index > CONTINENTS.size()) {
+    return EMPTY_STR;
+  }
+  return CONTINENTS[index - 1];
+}
 
 struct Country {
   std::string name;
@@ -149,8 +171,8 @@ bool nextCountry(std::istream& stream, Country& country);
 void Country::read() {
   std::cout << "Enter country:\n";
   name = io::nextString(';');
-  for (std::size_t i = 0; i < CONTINENTS.size(); ++i) {
-    std::cout << i + 1 << " - " << CONTINENTS[i] + "  ";
+  for (int i = 1; i <= CONTINENTS.size(); ++i) {
+    std::cout << i << " - " << getContinent(i) << "  ";
   }
   std::cout << "\nEnter continent:\n";
   continent = io::nextInt(1, 8);
@@ -269,22 +291,31 @@ public:
       this->highestCapitalPopulation(workingFile);
       return true;
     }},
+    Action { 3, "Average density of countries", [this, &workingFile]() {
+      this->countriesAverageDensity(workingFile);
+      return true;
+    }},
+    Action { 4, "Capital population by country", [this, &workingFile]() {
+      this->capitalPopulationRatioByCountry(workingFile);
+      return true;
+    }},
+    Action { 5, "Capital population by continent", [this, &workingFile]() {
+      this->capitalPopulationRatioByContinent(workingFile);
+      return true;
+    }},
     Action { 0, "Back" }
   }) {}
 
 private:
   void highestCapitalPopulation(std::string& workingFile);
+  void countriesAverageDensity(std::string& workingFile);
+  void capitalPopulationRatioByCountry(std::string& workingFile);
+  void capitalPopulationRatioByContinent(std::string& workingFile);
 };
 
 void StatMenu::highestCapitalPopulation(std::string& workingFile) {
   std::ifstream file(workingFile.c_str());
-  if (!file.is_open()) {
-    std::cout << "Could not open file." << std::endl;
-    return;
-  } else {
-    std::string line;
-    getline(file, line);
-  }
+  io::prepareFile(file);
   Country highestCountry;
   if (nextCountry(file, highestCountry)) {
     Country country;
@@ -299,6 +330,60 @@ void StatMenu::highestCapitalPopulation(std::string& workingFile) {
   } else {
     std::cout << "No countries available." << std::endl;
   }
+  file.close();
+}
+
+void StatMenu::countriesAverageDensity(std::string& workingFile) {
+  std::ifstream file(workingFile.c_str());
+  io::prepareFile(file);
+  double totalArea = 0;
+  double totalPopulation = 0;
+  bool hasCountries = false;
+  Country country;
+  while (nextCountry(file, country)) {
+    hasCountries = true;
+    totalArea += country.area;
+    totalPopulation += country.population;
+  }
+  if (hasCountries && totalArea > 0) {
+    std::cout << "Average density: " << 1000000 * totalPopulation / totalArea << std::endl;
+  } else if (!hasCountries) {
+    std::cout << "No countries available." << std::endl;
+  }
+  file.close();
+}
+
+void StatMenu::capitalPopulationRatioByCountry(std::string& workingFile) {
+  std::ifstream file(workingFile.c_str());
+  io::prepareFile(file);
+  Country country;
+  while (nextCountry(file, country)) {
+    std::cout << std::setprecision(2) << std::fixed
+              << country.name << " "
+              << 100 * country.capitalPopulation / (1000000 * (double) country.population)
+              << "%\n";
+  }
+  file.close();
+}
+
+void StatMenu::capitalPopulationRatioByContinent(std::string& workingFile) {
+  std::ifstream file(workingFile.c_str());
+  io::prepareFile(file);
+  std::unordered_map<int, std::pair<double, double>> dataByContinent;
+  Country country;
+  while (nextCountry(file, country)) {
+    auto& data = dataByContinent[country.continent];
+    data.first += country.capitalPopulation;
+    data.second += country.population;
+  }
+  for (auto& i : dataByContinent) {
+    auto& data = i.second;
+    std::cout << std::setprecision(2) << std::fixed
+              << getContinent(i.first) << " "
+              << 100 * data.first / (1000000 * (double) data.second)
+              << "%\n";
+  }
+  file.close();
 }
 
 class MainMenu : public Menu {
@@ -399,20 +484,20 @@ void MainMenu::printData(std::string& workingFile) {
     return;
   }
   std::ifstream file(workingFile.c_str());
-  if (!file.is_open()) {
-    std::cout << "Could not open file." << std::endl;
-    return;
-  }
+  io::prepareFile(file);
   std::string line;
-  std::getline(file, line);
-  std::cout << line << "\n";
   Country country;
   while (std::getline(file, line)) {
     if (line.empty()) continue;
     std::istringstream iss(line);
     iss >> country;
-    std::cout << country << "\n";
+    std::cout << "\nName: " << country.name << "\n"
+              << "Continent: " << getContinent(country.continent) << "\n"
+              << "Capital: " << country.capital << "\n"
+              << "Capital population: " << country.capitalPopulation << "\n"
+              << "Population: " << country.population << "\n";
   }
+  file.close();
 }
 
 class App {
