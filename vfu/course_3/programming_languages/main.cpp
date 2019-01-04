@@ -30,6 +30,7 @@
 #include <fstream>
 #include <sstream>
 #include <utility>
+#include <functional>
 #include <array>
 #include <vector>
 #include <unordered_map>
@@ -137,7 +138,7 @@ namespace io {
 
 };
 
-const std::array<std::string, 7> CONTINENTS = {
+const std::array<std::string, 7> CONTINENTS = {{
   "Europe",
   "Asia",
   "Afrika",
@@ -145,11 +146,11 @@ const std::array<std::string, 7> CONTINENTS = {
   "North America",
   "South America",
   "Antarctica"
-};
+}};
 
 const std::string EMPTY_STR = std::string {};
 
-const std::string& getContinent(int index) {
+const std::string& getContinent(size_t index) {
   if (index < 1 || index > CONTINENTS.size()) {
     return EMPTY_STR;
   }
@@ -171,7 +172,7 @@ bool nextCountry(std::istream& stream, Country& country);
 void Country::read() {
   std::cout << "Enter country:\n";
   name = io::nextString(';');
-  for (int i = 1; i <= CONTINENTS.size(); ++i) {
+  for (size_t i = 1; i <= CONTINENTS.size(); ++i) {
     std::cout << i << " - " << getContinent(i) << "  ";
   }
   std::cout << "\nEnter continent:\n";
@@ -283,7 +284,7 @@ class StatMenu : public Menu {
 public:
 
   StatMenu(std::string& workingFile) : Menu("Statistics", std::vector<Action> {
-    Action { 1, "Help", [this, &workingFile]() {
+    Action { 1, "Help", [this]() {
       this->print();
       return true;
     }},
@@ -390,11 +391,11 @@ class MainMenu : public Menu {
 public:
 
   MainMenu(std::string& workingFile) : Menu("Main Menu", std::vector<Action> {
-    Action { 1, "Help", [this, &workingFile]() {
+    Action { 1, "Help", [this]() {
       this->print();
       return true;
     }},
-    Action { 2, "Show working file", [this, &workingFile]() {
+    Action { 2, "Show working file", [&workingFile]() {
       if (!workingFile.empty()) {
         std::cout << "Working file is " << workingFile << std::endl;
       } else {
@@ -414,7 +415,7 @@ public:
       this->printData(workingFile);
       return true;
     }},
-    Action { 6, "Statistics", [this, &workingFile]() {
+    Action { 6, "Statistics", [&workingFile]() {
       if (workingFile.empty()) {
         std::cout << "No working file selected." << std::endl;
         return true;
