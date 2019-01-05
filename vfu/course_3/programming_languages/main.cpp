@@ -38,7 +38,6 @@
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
-#include <experimental/iterator>
 
 namespace io {
 
@@ -134,6 +133,15 @@ namespace io {
       std::string line;
       getline(file, line);
     }
+  }
+
+  void joinToString(std::vector<std::string>& v, std::ostream& out, const char* delim = ";") {
+    for (auto start = std::begin(v);
+         start != std::end(v);
+         start++) {
+           out << *start;
+           if (start + 1 != std::end(v)) out << delim;
+         }
   }
 
 };
@@ -453,9 +461,7 @@ void MainMenu::changeWorkingFile(std::string& workingFile) {
     // Try to write headers
     std::ofstream out(newFile.c_str());
     if (out) {
-      std::copy(std::begin(properties),
-                std::end(properties),
-                std::experimental::ostream_joiner<std::string>(out, ";"));
+      io::joinToString(properties, out);
       out << "\n";
       out.close();
       workingFile = newFile;
