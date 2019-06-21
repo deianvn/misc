@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Currency Converter</string>
+    <string name="retry">Retry</string>
+    <string name="edit">Add</string>
+</resources>
