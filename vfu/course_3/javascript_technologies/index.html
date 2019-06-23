@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ВСУ - Курсов проект</title>
+
+    <style>
+
+      .center {
+        text-align: center;
+      }
+
+      .title {
+        text-align: center;
+        color: #0d7236;
+      }
+
+      #clock {
+        display: inline-block;
+        padding: 15px 25px;
+        border-radius: 10px;
+        background-color: #42f489;
+      }
+
+      .text-tool {
+        text-align: center;
+        margin: 0 auto;
+        width: 75%;
+      }
+
+      .text-area {
+        width: 100%;
+        height: 300px;
+        margin-bottom: 5px;
+      }
+
+      .words {
+        min-height: 100px;
+        border-radius: 20px;
+        border: solid 1px black;
+        background-color: white;
+        text-align: left;
+        padding: 30px 30px;
+      }
+
+      button {
+        padding: 15px 25px;
+        border-radius: 10px;
+        background-color: #42f489;
+        border: none;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+
+      textarea {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        font-size: 1.5em;
+        padding: 20px 20px;
+      }
+
+      .word {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .size1 {
+        font-size: 30px;
+      }
+
+      .size2 {
+        font-size: 20px;
+      }
+
+      .size3 {
+        font-size: 10px;
+      }
+    </style>
+
+    <script>
+
+      function getCurrentTime() {
+        const currentdate = new Date();
+        return currentdate.getHours() + ":" +
+               currentdate.getMinutes() + ":" +
+               currentdate.getSeconds() + " " +
+               currentdate.getDate() + "/" +
+               (currentdate.getMonth() + 1)  + "/" +
+               currentdate.getFullYear();
+      }
+
+      function runClock() {
+        const timer = document.getElementById('clock');
+        timer.innerHTML = getCurrentTime();
+        setTimeout(runClock, 500);
+      }
+
+      function calculateWordsCount() {
+        const words = document.getElementById('wordsArea')
+          .value.trim().split(/\s+/);
+        const wordsMap = {};
+        words.forEach((word) => {
+          word = word.toLowerCase();
+          if (wordsMap.hasOwnProperty(word)) {
+            wordsMap[word]++;
+          } else {
+            wordsMap[word] = 1;
+          }
+        });
+        return Object.keys(wordsMap).map(function(key) {
+          return {
+            value: key,
+            count: wordsMap[key]
+          };
+        });
+      }
+
+      function printWordsFrequency() {
+        const wordsFrequency = calculateWordsCount();
+        let text = '';
+        wordsFrequency.forEach((word) => {
+          let cls = 'size3';
+          if (word.count > 10) cls = 'size1';
+          else if (word.count > 5) cls = 'size2';
+          text += '<span class="word ' + cls + '">' + word.value + ' - ' + word.count + '</span>';
+        });
+        document.getElementById('words').innerHTML = text;
+      }
+
+    </script>
+  </head>
+  <body onload="runClock()">
+    <h1 class="title">Курсов проект по JavaScript технологии</h1>
+    <h3 class="title">Изготвил: Деян Ризов</h3>
+    <div class="center">
+      <h3 id="clock"></h3>
+    </div>
+    <div class="text-tool">
+      <textarea id="wordsArea" class="text-area">
+      </textarea><br/>
+      <button onclick="printWordsFrequency()">Калкулирай броя на всяка дума</button>
+      <div id="words" class="words"></div>
+    </div>
+  </body>
+</html>
